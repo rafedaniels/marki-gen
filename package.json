@@ -1,0 +1,45 @@
+{
+	"name": "marki",
+	"description": "CLI to bootstrap my new proyects",
+	"version": "0.0.2",
+	"license": "MIT",
+	"bin": {
+		"marki": "index.js",
+		"m": "index.js"
+	},
+	"author": {
+		"name": "Rafael Soley",
+		"email": "rsoley0@gmail.com",
+		"url": "rsoley.com"
+	},
+	"keywords": [
+		"marki",
+		"Rafael Soley"
+	],
+	"files": [
+		"index.js",
+		"utils"
+	],
+	"scripts": {
+		"format": "prettier --write \"./**/*.{js,json}\""
+	},
+	"dependencies": {
+		"chalk": "^4.1.2",
+		"cli-alerts": "^1.2.2",
+		"cli-handle-error": "^4.4.0",
+		"cli-handle-unhandled": "^1.1.1",
+		"cli-meow-help": "^3.1.0",
+		"cli-welcome": "^2.2.2",
+		"copy-template-dir": "^1.4.0",
+		"execa": "^6.1.0",
+		"inquirer": "^9.1.0",
+		"listr": "^0.14.3",
+		"meow": "^9.0.0",
+		"ora": "^6.1.2",
+		"rxjs": "^7.5.6"
+	},
+	"devDependencies": {
+		"prettier": "^2.7.1"
+	},
+	"type": "module"
+}
