@@ -4,56 +4,95 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import { exec } from "child_process"
+import { exec } from 'child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import Listr from 'listr';
 
-export default ({ opts, answers }) => {
-	let { install } = opts
-	let { template, name } = answers
+export default async ({ opts, answers }) => {
+	let { install, git, debug } = opts;
+	let { template, name, version, deps } = answers;
 
 	let templatePath = path.join(__dirname, '..', 'templates', template);
+	let toPath = path.join(process.cwd(), name);
 
 	let tasks = [
 		{
 			title: 'Copy files',
-			task: () => {
-				copy(
+			task: async () => {
+				await copy(
 					templatePath,
-					path.join(process.cwd(), name),
+					toPath,
 					{
-						name: name
+						name,
+						version
 					},
-					true
+					debug
 				);
 			}
 		},
 		{
-			title: "Install Dependencies",
-			task: (ctx, task) => {
+			title: 'Install Dependencies',
+			task: async (ctx, task) => {
 				// if(yarn) {
-				// 	exec(`cd ${templatePath} && yarn`, (error, stdout, stderr) => {
+				// 	exec(`cd ${toPath} && yarn`, (error, stdout, stderr) => {
 				// 		if(error) throw new Error("Yarn is not accesible. Install it or install dependencies with NPM.")
 				// 		if(stderr) throw new Error(stderr)
 				// 		console.log(stdout)
-				// 	}) 
+				// 	})
 
 				// 	return
 				// }
 
-				exec(`cd ${templatePath} && npm install`, (error, stdout, stderr) => {
-					if(error) throw new Error(error)
-					if(stderr) throw new Error(stderr)
-					console.log(stdout)
-				})
+				//TODO: Yarn Support
+
+				if (deps) {
+					deps.forEach(async (dep) => {
+						await exec(
+							`cd ${toPath} && npm install ${dep} && npm install`,
+							(error, stdout, stderr) => {
+								if (error) throw new Error(error);
+								if (stderr) console.log(stderr);
+								debug && console.log(stdout);
+							}
+						);
+					});
+					return true;
+				}
+
+				await exec(
+					`cd ${toPath} && npm install`,
+					(error, stdout, stderr) => {
+						if (error) throw new Error(error);
+						if (stderr) console.log(stderr);
+						debug && console.log(stdout);
+					}
+				);
 			},
 			skip: () => {
-				if(!install) return "Automatic installation not specified (--install)"
+				if (!install)
+					return 'Automatic installation not specified (--install)';
+			}
+		},
+		{
+			title: 'Initializing GIT',
+			task: async (ctx, task) => {
+				await exec(
+					`cd ${toPath} && git init`,
+					(error, stdout, stderr) => {
+						if (error) throw new Error(error);
+						if (stderr) throw new Error(stderr);
+						debug && console.log(stdout);
+					}
+				);
+			},
+			skip: () => {
+				if (!git)
+					return 'Automatic git initialization not specified (--git)';
 			}
 		}
-	]
+	];
 
 	new Listr(tasks).run();
-}
+};

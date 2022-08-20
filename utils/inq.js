@@ -6,14 +6,19 @@ let answers = {
 };
 
 export default async (opts) => {
-	let { interactive } = opts
-	console.log(interactive)
+	let { interactive, install } = opts;
 	interactive &&
 		q.push(
 			{
 				type: 'confirm',
 				name: 'install',
 				message: 'Install dependencies by default?'
+			},
+			{
+				type: 'confirm',
+				name: 'git',
+				message: 'Initialize git in the proyect',
+				default: false
 			}
 			// {
 			// 	type: 'confirm',
@@ -22,17 +27,38 @@ export default async (opts) => {
 			// }
 		);
 
+	install &&
+		q.push({
+			type: 'checkbox',
+			name: 'deps',
+			message: 'Extra dependencies to install (Suggested dependencies)',
+			choices: [
+				'ffmpeg',
+				'mongoose',
+				'mongodb',
+				'quick.db',
+				'@rafe.daniels.official/betterlogs',
+				'betterlogs-discord',
+				'mysql'
+			]
+		});
+
 	q.push(
 		{
 			type: 'list',
 			name: 'template',
 			message: 'Choose a template',
-			choices: ['discord', 'typescript']
+			choices: ['wokcommands', 'express-ejs']
 		},
 		{
 			name: 'name',
 			message: 'Name of your proyect.',
 			default: 'unnamed_proyect'
+		},
+		{
+			name: 'version',
+			message: 'Version of your proyect.',
+			default: '0.0.0'
 		}
 	);
 
@@ -51,12 +77,13 @@ export default async (opts) => {
 		});
 
 	// opts.yarn = opts.yarn || answers.yarn
-	opts.install = opts.install || answers.install
+	opts.install = opts.install || answers.install;
+	opts.git = opts.git || answers.git;
 
 	answers = {
 		answers,
 		opts
-	}
+	};
 
 	return answers;
 };

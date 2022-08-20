@@ -32,7 +32,6 @@ const { clear, debug } = flags;
 	debug && log(flags);
 
 	let opts = await inq(flags);
-	let { name, template } = opts;
 
 	main(opts);
 })();

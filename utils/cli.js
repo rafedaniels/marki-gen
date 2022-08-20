@@ -41,6 +41,12 @@ const flags = {
 		default: false,
 		alias: `i`,
 		desc: `Prompt for options`
+	},
+	git: {
+		type: `boolean`,
+		default: false,
+		alias: `g`,
+		desc: `Initialize a git repository`
 	}
 };
 
