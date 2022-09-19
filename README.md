@@ -30,4 +30,4 @@ Licensed under MIT license.
 
 ### Support
 
-To get support, contact me on Discord! `Rafe Daniels#6112`
+To get support, contact me on Discord! `anonrafe#6112`
